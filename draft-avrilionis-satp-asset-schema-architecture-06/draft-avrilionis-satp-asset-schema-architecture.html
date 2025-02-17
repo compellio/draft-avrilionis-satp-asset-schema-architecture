@@ -1,0 +1,1987 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Asset Schema Architecture for Asset Exchange</title>
+<meta content="Denis Avrilionis" name="author">
+<meta content="Thomas Hardjono" name="author">
+<meta content="
+        A management architecture for asset schemas and profiles is needed
+      to enable entities in the tokenized assets ecosystem to instantiate
+      tokens within one or more asset networks. An asset network may be
+      constrained to support only a select class or type of token to be
+      present in the network. In the SATP protocol, the receiving gateway at
+      the destination network is assumed in its preparatory stages to evaluate
+      the transfer request of a tokenized asset from the sending gateway at
+      the origin network. In order to evaluate the proposed transfer, the
+      receiving gateway must have access to the asset definition schema upon
+      which the token was based in the origin network. The current document
+      discusses the management architecture for the asset definition schema
+      and the schema-profiles derived from the definition schema. 
+    " name="description">
+<meta content="xml2rfc 3.26.0" name="generator">
+<meta content="draft-avrilionis-satp-asset-schema-architecture-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.26.0
+    Python 3.12.8
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.1
+    intervaltree 3.1.0
+    Jinja2 3.1.5
+    lxml 5.3.0
+    platformdirs 4.3.6
+    pycountry 24.6.1
+    PyYAML 6.0.2
+    requests 2.32.3
+    setuptools 70.3.0
+    wcwidth 0.2.13
+-->
+<link href="draft-avrilionis-satp-asset-schema-architecture.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 680;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+  & li {
+    margin-top: 0.5em;
+  }
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+}
+dl:not(.dlNewline) > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+  caption-side: bottom;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
+}
+@media not print {
+  :hover > a.pilcrow {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
+}
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
+}
+
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* Comments */
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:is(:link, :focus, :hover),
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin: 2px 0.5em 0;
+  }
+}
+
+/* TOC layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">Asset Schema Architecture</td>
+<td class="right">February 2025</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Avrilionis &amp; Hardjono</td>
+<td class="center">Expires 21 August 2025</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Network Working Group</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-avrilionis-satp-asset-schema-architecture-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2025-02-17" class="published">17 February 2025</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Informational</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2025-08-21">21 August 2025</time></dd>
+<dt class="label-authors">Authors:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">D. Avrilionis</div>
+<div class="org">Compellio S.A.</div>
+</div>
+<div class="author">
+      <div class="author-name">T. Hardjono</div>
+<div class="org">MIT Connection Science</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Asset Schema Architecture for Asset Exchange</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1"> A management architecture for asset schemas and profiles is needed
+      to enable entities in the tokenized assets ecosystem to instantiate
+      tokens within one or more asset networks. An asset network may be
+      constrained to support only a select class or type of token to be
+      present in the network. In the SATP protocol, the receiving gateway at
+      the destination network is assumed in its preparatory stages to evaluate
+      the transfer request of a tokenized asset from the sending gateway at
+      the origin network. In order to evaluate the proposed transfer, the
+      receiving gateway must have access to the asset definition schema upon
+      which the token was based in the origin network. The current document
+      discusses the management architecture for the asset definition schema
+      and the schema-profiles derived from the definition schema.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note" id="section-note.1">
+      <h2 id="name-editorial-note">
+<a href="#name-editorial-note" class="section-name selfRef">Editorial Note</a>
+      </h2>
+<p id="section-note.1-1"> Discussion of this draft takes place on the SATP mailing list
+      (sat@ietf.org), which has its home page at <span><a href="https://datatracker.ietf.org/wg/satp/about/">https://datatracker.ietf.org/wg/satp/about/</a></span>.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 21 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2025 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-basic-concepts" class="internal xref">Basic Concepts</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-goal-of-asset-schema-manage" class="internal xref">Goal of asset schema management architecture</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-semantic-consistency-of-ass" class="internal xref">Semantic consistency of asset-tokens</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-artifacts-enabling-the-toke" class="internal xref">Artifacts enabling the tokenization</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-system-components-enabling-" class="internal xref">System components enabling the tokenization</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-component-architecture-for-" class="internal xref">Component architecture for asset artifacts and asset schema management</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-registries" class="internal xref">Registries</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-registry-usage" class="internal xref">Registry usage</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-registry-governance" class="internal xref">Registry governance</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-dar-issuance" class="internal xref">DAR issuance</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-gateways-and-cross-network-" class="internal xref">Gateways and Cross-Network Asset Transfers</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-pre-transfer-validation" class="internal xref">Pre-Transfer Validation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-validating-asset-metadata-a" class="internal xref">Validating Asset Metadata Artifacts</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-working-with-registries" class="internal xref">Working with Registries</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-references" class="internal xref">References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1"> One of the significant challenges facing many decentralized asset
+      networks is the compatibility of the token as the digital representation
+      of value (i.e., asset). The recent EU MiCA Regulation <span>[<a href="#MiCA" class="cite xref">1</a>]</span> recognizes asset-referenced tokens (ART) as a means to
+      represent real-world assets (RWA) that are located outside the network
+      and pre-exists before the token is instantiated on the network.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2"> However, currently, there are no technical mechanisms to digitally
+      express the definition of tokenizable assets. Such a definition is
+      relevant for asset transfer protocols such as SATP <span>[<a href="#SATP-ARCH" class="cite xref">2</a>]</span> that utilize gateways to transfer tokenized assets
+      from one network to another. This is because if an asset (value) is to
+      be transferable across distinct networks then both networks must share a
+      common definition of what constitutes a tokenizable asset.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3"> The semantic definition of the tokenizable real-world assets is
+      referred to as the asset definition schema (or “asset schema” for
+      short). Certain industry verticals or narrow use cases may define a
+      subset of the larger asset definition schema. These derived schemas are
+      called schema-profiles (or simply “profile”).<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4"> There are currently no protocols for the management of these asset
+      schemas and profiles that can be utilized by gateways to retrieve and
+      validate schemas, before executing the secure asset transfer
+      protocol.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5"> A management architecture for asset schemas and profiles must
+      include mechanisms to enable designated authorities in a jurisdiction or
+      community to publish an asset definition schema in such a way that is
+      easily accessible. Furthermore, the schema management architecture must
+      provide standard protocols to enable any entity or community to easily
+      derive narrower profiles and enable them to mint tokens that are
+      compliant with the profile and thus to the asset definition schema. This
+      approach enables an equivalent comparison between two tokens in
+      different networks to be performed if they are compliant to the same
+      schema-profile.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6"> An asset schema management architecture should provide a logical
+      arrangement of the roles, functions and the interaction flows of the
+      entities and asset-related Artifacts within the ecosystem.<a href="#section-1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-2">
+      <h2 id="name-terminology">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+      </h2>
+<span class="break"></span><dl class="dlNewline" id="section-2-1">
+        <dt id="section-2-1.1">Real World Asset (RWA)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.2"> This is the asset in
+        the real-world whose value pre-exists before they are tokenized. A
+        given RWA may be a physical asset (e.g. commodities, oil, gold) or it
+        may be a digital-only asset (e.g. digital-only artwork). Any discrete
+        object that bears economic, cultural, intellectual or any other form
+        of value can be considered an RWA, making it subject to
+        identification, ownership or trade among physical persons or legal
+        entities. A physical asset exists physical world in a non-digitized
+        form.<a href="#section-2-1.2" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.3">Asset Definition Schema (or Asset Schema)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.4"> This
+        is a data structure that defines the class or type of real-world
+        assets (RWA) in a jurisdiction or community that can be tokenized. It
+        defines the structure and the legal elements and attributes of an
+        asset token.<a href="#section-2-1.4" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.5">(Asset) Schema-Profile (or Profile)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.6"> This is a
+        data structure that is a subset of an Asset Definition Schema
+        that is relevant to a given industry or vertical. A profile must
+        include a reference to the parent schema from which it was derived. A
+        profile may be published by the same entity as the Asset Schema
+        Authority, or it may be published by a different entity.<a href="#section-2-1.6" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.7">Asset Schema Authority (ASA)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.8"> This is a legal
+        entity in a jurisdiction that is recognized by other entities in the
+        ecosystem as being the competent authority to publish one or more
+        asset schemas under a given namespace.<a href="#section-2-1.8" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.9">Digitized Asset Record (DAR)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.10"> A digital
+        representation (data structure) of a real-world asset that is
+        primarily stored off-network or off-chain (e.g. traditional
+        centralized depositories, registries, etc.). It is static information
+        that is independent of the mechanism used to store it. In some cases,
+        the DAR may be a digitized version of an existing paper certificate
+        (note). For convenience, a digitized asset record may be copied onto
+        the ledger of a given network for ease of accessibility (e.g.
+        accessible smart contract), but its utility is independent of any
+        technology used to store it. A DAR may hold reference to attestations
+        issued by one or more Asset Record Authority. In the context of SATP,
+        a DAR is typically hosted in a Network - a DAR is what is often quoted
+        as "asset" in SATP Core.<a href="#section-2-1.10" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.11">Asset Record Authority</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.12"> This is a legal entity
+        in a jurisdiction that is recognized by other entities in the
+        ecosystem as being the competent authority to attest to the existence
+        of the real-world asset being represented as a DAR. Examples
+        of asset record authorities include the traditional centralized
+        certificates depository (e.g. DTCC, Clearstream, Euroclear), municipal
+        land registries, and others <span>[<a href="#ClearingHouses" class="cite xref">3</a>]</span>.<a href="#section-2-1.12" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.13">Tokenized Asset Record (TAR)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.14"> This is a data
+        structure used to instantiate (“tokenize”) a RWA based on
+        both the DAR and the Schema-Profile that the creator
+        of the token claims adherence to. The TAR must “point to” (carry
+        references to) both the DAR (which states that the real-world asset
+        truly exists) and the Schema-Profile (that defines the
+        semantic and legal recognition) of the tokenization process. A TAR is
+        stored in a registry and must be accessible to processes that mint the
+        Asset-Token, because the record provides the semantic meaning
+        of the Asset-Token. We refer to the TAR as “smart pointer”
+        because it maintains one-to-one mapping with a DAR. A TAR does not
+        carry ownership information. In the context of SATP,
+        a DAR is typically recorded in a Registry - a TAR is part of the SATP
+        transfer context established during SATP Setup stage (a.k.a "Stage 0").
+        A TAR has a standardized identification format so Gateways have a
+        uniform way to identify assets, independently from the specific
+        DAR identification method used in each Network.<a href="#section-2-1.14" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.15">Asset-Token (or Token)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.16"> This is the data
+        structure on the network (i.e. on-chain) that represents the
+        real-world asset through its association with the TAR and DAR based on
+        the Schema-Profile. A given asset token must have a permanent
+        immutable link (reference) to a tokenized asset record because the
+        record provides the semantic context behind the asset token. Since the
+        asset token is an on-chain construct, it can be managed by a smart
+        contract or other similar programs that interact with the ledger of
+        the network. Any SATP gateway or any entity that views a given asset
+        token must be able to fetch the corresponding tokenized asset record
+        and schema-profile in order to validate the legitimacy of the asset
+        token.<a href="#section-2-1.16" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.17">Asset Provider</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.18"> This is the party (person or
+        legal entity) in a jurisdiction or community that issues an
+        Asset-Token based on a TAR and the related
+        Schema-Profile.<a href="#section-2-1.18" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.19">Token Issuance Authorization</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.20"> In some
+        jurisdictions, the Asset Provider may be required to obtain
+        authorization from one or more Asset Schema Authorities in
+        that jurisdiction to create (mint) Asset-Tokens on a network.
+        An issuance-authorization protocol must be utilized that provides
+        proof that the Asset Provider obtained authorization.<a href="#section-2-1.20" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.21">Asset Metadata Artifacts (or Asset Artifacts)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.22">
+        For simplicity, the schemas, profiles, tokenized asset records, and
+        other data structures that assist in the creation and management of
+        asset-tokens on the network are referred to as asset-related artefacts
+        (metadata). Being metadata, the artefacts exclude the asset token
+        itself.<a href="#section-2-1.22" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.23">Artefacts Registry (or Registry)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.24"> This is a
+        location on the Internet or on other asset-related networks and
+        systems where the Asset Metadata Artifacts can be registered
+        and obtained (fetched). This includes services where the artefact's
+        integrity (signature) and author source authenticity can be verified.
+        SATP gateways utilize the registries to retrieve (fetch) and/or
+        validate a given asset schema or profiles derived from that schema.<a href="#section-2-1.24" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.25">Asset-related Network (or Network)</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.26"> Any system
+        that maintains DARs. A Network can be based on DLT
+        technology, it can be a traditional application running as SaaS
+        software, or it can be a stand-alone enterprise application.<a href="#section-2-1.26" class="pilcrow">¶</a>
+</dd>
+        <dd class="break"></dd>
+<dt id="section-2-1.27">Gateway</dt>
+        <dd style="margin-left: 1.5em" id="section-2-1.28"> A software system that implements the
+        SATP protocol to transfer assets between two Networks.
+        Transfers are based on tokenized assets where validations can occur
+        before the execution of the transfer, to ensure consistency.<a href="#section-2-1.28" class="pilcrow">¶</a>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="basic_concepts">
+<section id="section-3">
+      <h2 id="name-basic-concepts">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-basic-concepts" class="section-name selfRef">Basic Concepts</a>
+      </h2>
+<div id="goal_of_architecture">
+<section id="section-3.1">
+        <h3 id="name-goal-of-asset-schema-manage">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-goal-of-asset-schema-manage" class="section-name selfRef">Goal of asset schema management architecture</a>
+        </h3>
+<p id="section-3.1-1">When a given Asset Provider seeks to tokenize a real-world asset
+        (RWA) on a given network, contextual information must accompany and
+        guide the token creation process. This background contextual
+        information consists of a range of data and artefacts that may exist
+        on-network (on-chain) and off-network (off-chain). Access to the
+        relevant artifacts enable other entities in the tokenized assets
+        ecosystem to validate the economic value represented by the asset
+        token.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">The need for data and artefacts to support the legal standing of an
+        asset token in a jurisdiction means that these artefacts are as
+        crucial as the token itself, and therefore the proper management of
+        these artefacts using standardized mechanisms is core to the value
+        proposition of the tokenized assets ecosystem.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">Thus, the goal of an asset schema management architecture is to
+        provide secure, persistent and reliable management of the relevant
+        data and artefacts so that Asset-Tokens can be created, traded and
+        decommissioned with transparency and consistency across networks
+        globally.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="asset_semantic_consistency">
+<section id="section-3.2">
+        <h3 id="name-semantic-consistency-of-ass">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-semantic-consistency-of-ass" class="section-name selfRef">Semantic consistency of asset-tokens</a>
+        </h3>
+<p id="section-3.2-1">In order for communities to accept the tokenized representation of
+        real-world assets, there must be an agreed syntax and semantic
+        definition of what constitutes a tokenizable real-world asset. An
+        agreed definition enables a token in one network to be acceptable in a
+        different network, and therefore transferrable across networks. A
+        disciplined and structured approach to defining the semantics of
+        tokenizable real-world assets is therefore fundamental to the
+        viability of a tokenized assets ecosystem.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">The term used to refer to this semantic definition is the Asset
+        Definition Schema (or simply Asset Schema). Similar to other data
+        schemas (e.g. JSON schema, DTD in XML), the asset-schema, in addition
+        to other processing properties/capabilities, defines the structure and
+        the legal elements and attributes of an asset token such that the
+        token is legally accepted as a financial instrument in a given
+        jurisdiction. For certain industry verticals that are concerned only
+        with specific types or classes of real-world assets, a subset of the
+        Asset Schema. We refer to this subset as the Schema-Profile (or simply
+        as the asset “profile”).<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">In order for Asset Schema to be acceptable to a community of
+        stakeholders, the Asset Schema must be agreed upon by the community
+        and be published (digitally signed) by an authority that is accepted
+        by the community. This authority is referred to as the Asset Schema
+        Authority (ASA). Similarly, a Schema-Profile must be published by the
+        appropriate authority in the industry or vertical that utilizes that
+        profile. How these authorities are selected and governed is outside
+        the scope of this document.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="tokenization">
+<section id="section-3.3">
+        <h3 id="name-artifacts-enabling-the-toke">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-artifacts-enabling-the-toke" class="section-name selfRef">Artifacts enabling the tokenization</a>
+        </h3>
+<p id="section-3.3-1"> For a real-world asset (RWA) to be represented as a token
+        on a network (i.e. "on-chain") based on an Asset Schema and
+        Schema-Pofile, there are several supporting data structures or
+        “artifacts” that must be created, published and managed over time:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-3.3-2">
+          <dt>(a)</dt>
+<dd id="section-3.3-2.1">
+            <p id="section-3.3-2.1.1">Evidence of the existence of the physical real-world asset: A
+            record of the existence of the real-world asset must be produced,
+            digitized, and signed by the relevant entity that attests to the
+            record. This entity is referred to as the Asset Record Authority,
+            while the record is referred to as the Digitized Asset Record
+            (DAR). Such DAR must be able to be stored off-network (off-chain)
+            or on-network (on-chain), without affecting the veracity of the
+            claims or assertions made in the record.<a href="#section-3.3-2.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>(b)</dt>
+<dd id="section-3.3-2.2">
+            <p id="section-3.3-2.2.1">Binding of the record to the schema: A DAR can be
+            represented as an Asset Token (i.e. it is tokenizable) only in the
+            context of an Asset Schema or Schema-Profile. In other words,
+            tokenization only makes logical sense if sufficient data about the
+            structure, legal elements and attributes (following the structure
+            of the Schema) is defined for the type of asset listed in a record
+            holding all these data.<a href="#section-3.3-2.2.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2.2.2">The binding between a Schema-Profile and the DAR (in order to
+            mint a token) is referred to as the Tokenized Asset Record (TAR).
+            The TAR can be said to be a “smart pointer” because it must carry
+            a reference (pointer) to both the Schema-Profile and the DAR. In
+            other words, the TAR is the data structure that enables the creation
+            (minting) of the Asset Token.<a href="#section-3.3-2.2.2" class="pilcrow">¶</a></p>
+<p id="section-3.3-2.2.3">Both of these references/pointers must be resolvable, and the
+            relevant data structures at the endpoint of the references must be
+            signed and be current/fresh (i.e. not expired). The TAR is stored
+            in a Registry Service because it contains static artefact
+            information, and unlike the asset token it does not carry
+            ownership information (i.e. not tradeable).<a href="#section-3.3-2.2.3" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>(c)</dt>
+<dd id="section-3.3-2.3">
+            <p id="section-3.3-2.3.1">Transitivity conferred value to an Asset-Token by the
+            TAR: Within a Network (on-chain), an Asset-Token must
+            reference (point to) a corresponding TAR because the record is the
+            technical means by which economic value is conferred upon the
+            on-chain Asset-Token.<a href="#section-3.3-2.3.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2.3.2">Thus, one can say that the economic value of the RWA is
+            conferred transitively to the asset token from the DAR through the
+            TAR. The TAR is the middleman construct that holds things
+            together.<a href="#section-3.3-2.3.2" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>(d)</dt>
+<dd id="section-3.3-2.4">
+            <p id="section-3.3-2.4.1">Asset-token as the ownership mechanism: The ownership
+            of the tokenized RWA is defined through the control of the Network
+            of the Asset-Token. Usually, this entails control over the public
+            key pair (address) on the network associated with the
+            Asset-Token.<a href="#section-3.3-2.4.1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2.4.2">Thus, one can say that the economic value of the RWA is
+            conferred transitively to the asset token from the DAR through the
+            TAR. The TAR is the middleman construct that holds things
+            together.<a href="#section-3.3-2.4.2" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<span id="name-basic-concepts-2"></span><div id="concepts">
+<figure id="figure-1">
+          <div class="alignCenter art-text artwork" id="section-3.3-3.1">
+<pre>
+             |               |
+             |               | +---------+
+             |               | | Asset   |
+             |               | | Schema  |
+             |               | +---------+
+             |               |      ^
+             |               |      |
+             |               |  Ref |
+             |               |      |
+ +------+   Ref  +------+   Ref  +------+   Ref  +-------------+
+ | RWA  | &lt;----- | DAR  | &lt;----- | TAR  | &lt;----- | Asset-Token |
+ +------+    |   +------+    |   +------+        +-------------+
+             |               |
+             |               |
+ Off-line    |    Network    |    Registry
+
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-basic-concepts-2" class="selfRef">Basic concepts</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="system_components_for_tokenization">
+<section id="section-3.4">
+        <h3 id="name-system-components-enabling-">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-system-components-enabling-" class="section-name selfRef">System components enabling the tokenization</a>
+        </h3>
+<p id="section-3.4-1">In order for a real-world asset (RWA) to be represented as a token
+        on a network (i.e. “on-chain”) based on an asset schema and profile,
+        there are several supporting data structures or “artefacts” that must
+        be created, published and managed over time.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">Asset Schema Authorities as well as Asset providers (collectively
+        referred to as “Parties”) are defined by way of a digital record call
+        “Party Definition”. A Party Definition should contain at least a
+        cryptographic public key that would be used by the party for any proof
+        operation related to creating Asset artefacts. However, to ensure
+        immutability of the identity of a Party, the identifier of a Party
+        Definition should not be derived from any Party key pair (for example,
+        in order to avoid modification of the identity of the Party in case of
+        key rotation).<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4-3">Asset Providers can request a Token Issuance Authorisation from the
+        relevant Asset Schema Authority at any time.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.4-4">Token Issuance Authorisations may be valid for a given period (e.g.
+        like SSL/TLS certificates, or oauth2.0 tokens).<a href="#section-3.4-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="component_architecture">
+<section id="section-4">
+      <h2 id="name-component-architecture-for-">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-component-architecture-for-" class="section-name selfRef">Component architecture for asset artifacts and asset schema management</a>
+      </h2>
+<div id="Registries">
+<section id="section-4.1">
+        <h3 id="name-registries">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-registries" class="section-name selfRef">Registries</a>
+        </h3>
+<p id="section-4.1-1">Registries, Networks and Gateways are system components that
+        participate in asset transfers. Among these three components, the
+        Registry plays a central role in the management of asset artifacts and
+        asset schemas.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">Registries are acting as persistent storage locations for Asset
+        Schemas, Asset Schema Profiles, Asset Providers, Asset Schema
+        Authorities and Tokenised Asset Records.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">Asset Schemas (or Schema-Profiles), once registered, cannot be
+        removed. New versions are appended in the Registry without removing
+        previous versions (append-only principle).<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="registry_usage">
+<section id="section-4.2">
+        <h3 id="name-registry-usage">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-registry-usage" class="section-name selfRef">Registry usage</a>
+        </h3>
+<p id="section-4.2-1">Asset Schema Authorities as well as Asset providers can freely
+        register themselves in a given Registry without any permission from
+        any other central organization.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">Updates of a Party Definition are append-only. Party Definitions
+        may contain new as well as revoked public keys. It may also contain
+        integrity keys (see below). Appends are transactions that are signed
+        using the private key of the Party.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">Key rotation is done by appending a new Party Definition containing
+        the new key, and subsequently, a new update of the Party Definition
+        revoking the old public key.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">New Asset Schemas/Profiles (or new versions of existing Asset
+        Schemas/Profiles) can be appended to the Registry by any Party without
+        previous authorisation by any other Party. As part of its Definition,
+        an Asset Provider can self-declare several key pairs that would be
+        used as integrity verification keys for Tokenized Asset Records.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">When issuing a Tokenized Asset Record, an Asset Provider should
+        sign that record data with an integrity key. Integrity keys are
+        declared as part of an Asset Provider Definition<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<p id="section-4.2-6">A Token Issuance Authorisation Request (TIAR) is created by an
+        Asset Provider (i.e. signed by the private key of the Asset Provider).
+        It is a data structure containing information about an Asset Provider
+        including a cryptographic public key (that is part of its Asset
+        Provider Definition), a reference to a Network (a Network ID), and a
+        reference to the Asset Schema-Profile (an Asset Schema-Profile ID).
+        (note: A TIAR is similar to a Certificate Signing Request in the
+        context of SSL)<a href="#section-4.2-6" class="pilcrow">¶</a></p>
+<p id="section-4.2-7">The TIAR becomes a Token Issuance Authorisation (TIA) when signed
+        by an Asset Schema Authority. TIAs allow Asset Providers to issue TARs
+        in a specific Registry, which are valid for a given Asset Schema Profile.<a href="#section-4.2-7" class="pilcrow">¶</a></p>
+<p id="section-4.2-8">Note: It is assumed that the Asset Provider holds the authorisation from an Asset Record Authority
+        to issue DARs in a given network. This authorisation is eventually part of the attributes of the DAR. Issuance of
+        DAR authorisations is outside of the scope of the present draft.<a href="#section-4.2-8" class="pilcrow">¶</a></p>
+<p id="section-4.2-9">Based on the TIA the Asset Provider Issues a TAR in the given Registry. Such TAR contains
+        references to the underlying Digitised Asset Record, the specific
+        Asset Schema-Profile as well as to the TIA.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="registry_governance">
+<section id="section-4.3">
+        <h3 id="name-registry-governance">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-registry-governance" class="section-name selfRef">Registry governance</a>
+        </h3>
+<p id="section-4.3-1">The current draft does not impose the existence of a central Registry. Many different registries may exist
+        either in the same or in different jurisdictions. Asset Schema Authorities as well as Asset providers can freely
+        register themselves at a given Registry without any permission from any central organisation. Asset Providers
+        can request an Asset Issuance Authorisation from the relevant Asset Schema Authority at any time.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="DAR_issuance">
+<section id="section-4.4">
+        <h3 id="name-dar-issuance">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-dar-issuance" class="section-name selfRef">DAR issuance</a>
+        </h3>
+<p id="section-4.4-1">In order for an Asset Provider to issue valid DARs and related TARs a series of processing steps occur. Before such processing sequence the following initial state must exist:<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.4-2.1">
+            <p id="section-4.4-2.1.1">The Asset Schema Authority is self-declared in the Registry<a href="#section-4.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.4-2.2">
+            <p id="section-4.4-2.2.1"> The Asset Provider is self-declared in the Registry<a href="#section-4.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.4-2.3">
+            <p id="section-4.4-2.3.1">The Asset Schema (Profile) is issued and stored in the Registry by the Asset Schema Authority<a href="#section-4.4-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.4-2.4">
+            <p id="section-4.4-2.4.1">It is also assumed that the Asset Provider holds an authorisation to issue DARs in the given Network<a href="#section-4.4-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.4-3">Given the above initial state, the processing sequence is described in the sequence diagram below:<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.4-4">
+          <li id="section-4.4-4.1">
+            <p id="section-4.4-4.1.1">The Asset Provider fetches the definition of the Asset Schema Authority related to a given Asset Profile from the Registry<a href="#section-4.4-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.4-4.2">
+            <p id="section-4.4-4.2.1">The Asset Provider submits a Token Issuance Authorization Request (TIAR) for the given Asset Profile to the Asset Schema Authority<a href="#section-4.4-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.4-4.3">
+            <p id="section-4.4-4.3.1">Assunming there is approval of the TIAR from the The Asset Schema Authority, the Asset Schema Authority registers the Token Issuance Authorization in the Registry<a href="#section-4.4-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.4-4.4">
+            <p id="section-4.4-4.4.1">The TIA is then delivered to the Asset Provider<a href="#section-4.4-4.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.4-4.5">
+            <p id="section-4.4-4.5.1">The DAR is created in the given Network (This step is optional, as the DAR might have already been created)<a href="#section-4.4-4.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.4-4.6">
+            <p id="section-4.4-4.6.1">The TAR is issued on the given Registry<a href="#section-4.4-4.6.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<span id="name-dar-issuance-2"></span><div id="dar_issuance">
+<figure id="figure-2">
+          <div class="alignCenter art-text artwork" id="section-4.4-5.1">
+<pre>
+  +----------------+    +------------------------+    +----------+    +---------+
+  | Asset Provider |    | Asset Schema Authority |    | Registry |    | Network |
+  +----------------+    +------------------------+    +----------+    +---------+
+         |                         |                      |               |
+         |                         |                      |               |
+         | 1. Fetch Authority Definition for Asset Profile
+         |-------------------------|---------------------&gt;|               |
+         |                         |                      |               |
+         | 2. Submit TIAR for Asset Profile
+         |------------------------&gt;|                      |               |
+         |                         |                      |               |
+         |                         | 3. Register TIA
+         |                         |---------------------&gt;|               |
+         |                         |                      |               |
+         |  4. Deliver TIA for given Asset Profile
+         |&lt;------------------------|                      |               |
+         |                         |                      |               |
+         | 5. Issue DAR (if not already created)
+         |-------------------------|---------------------&gt;|--------------&gt;|
+         |                         |                      |               |
+         | 6. Issue TAR with Refs to DAR, Asset Profile and TIA
+         |-------------------------|---------------------&gt;|               |
+         |                         |                      |               |
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-dar-issuance-2" class="selfRef">DAR Issuance</a>
+          </figcaption></figure>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="gateways_and_transfers">
+<section id="section-5">
+      <h2 id="name-gateways-and-cross-network-">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-gateways-and-cross-network-" class="section-name selfRef">Gateways and Cross-Network Asset Transfers</a>
+      </h2>
+<p id="section-5-1">The SATP Architecture defines a secure asset transfer protocol
+      between networks, where the transfer is performed by peered gateways
+      using the burn-mint paradigm and the classic two-phase commit
+      protocol.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<div id="pre_transfer_validation">
+<section id="section-5.1">
+        <h3 id="name-pre-transfer-validation">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-pre-transfer-validation" class="section-name selfRef">Pre-Transfer Validation</a>
+        </h3>
+<p id="section-5.1-1">An important requirement for the recipient gateway (G2) at the
+        destination network (NW2) is to validate that the asset-token (AT1) to
+        be transferred via the sending gateway (G1) in the origin network
+        (NW1) satisfies several requirements.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">The validation of these requirements must occur pre-transfer before
+        the first stage of the transfer commences. This preparatory stage is
+        referred to as Stage-0 in the SATP Architecture [REF?]. Some of the
+        information to be validated includes identity of originator and
+        beneficiary, the destination address at the destination network (NW2),
+        and asset-related information.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">With regard to asset-related information, the recipient gateway
+        (G2) must verify that the Asset-Token (AT1) in the origin network
+        (NW1) is recognized within the destination network (NW2). This means
+        that gateway G2 must obtain the relevant artifacts pertaining to the
+        asset token AT1.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="asset_metadata_validation">
+<section id="section-5.2">
+        <h3 id="name-validating-asset-metadata-a">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-validating-asset-metadata-a" class="section-name selfRef">Validating Asset Metadata Artifacts</a>
+        </h3>
+<p id="section-5.2-1">As part of the pre-transfer preparatory stage (Stage-0), gateway G1
+        must deliver metadata that is present within the asset token AT1 to
+        gateway G2. However, since network NW1 may be private/closed, this
+        means that gateway G2 may be unable to access the ledger on network
+        NW1 and thus must rely on the information within the Transfer Proposal
+        Claims (carrying this metadata) from gateway G1. This is one reason
+        why the Transfer Proposal Claims (in SATP-Core protocol) must be
+        digitally signed gateway G1.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">The following is a list of tasks related to the proposed transfer
+        of asset token AT1 from the origin network NW1 to the destination
+        network NW2:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="olPercent" id="section-5.2-3">
+          <dt>(a)</dt>
+<dd id="section-5.2-3.1">
+            <p id="section-5.2-3.1.1">Delivery of reference values of asset-token AT1 in network
+            NW1: The gateway G1 must deliver a copy of the references
+            found in the asset-token AT1 to gateway G2. Notably, this includes
+            the reference to the TAR that underlies Asset-Token AT1.<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>(b)</dt>
+<dd id="section-5.2-3.2">
+            <p id="section-5.2-3.2.1">Validating Tokenized Asset Record (TAR1) corresponding to
+            asset-token AT1: Upon receiving the reference to the
+            Tokenized Asset Record, the gateway G2 must resolve (de-reference)
+            the reference to the correct Registry Service (RG1) where the
+            Tokenized Asset Record (TAR1) is stored. Gateway G2 then fetches a
+            copy of the TAR1 from the Registry Service (RG1) and validates the
+            signature of on TAR1.<a href="#section-5.2-3.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>(c)</dt>
+<dd id="section-5.2-3.3">
+            <p id="section-5.2-3.3.1">Validating Schema Profile (SP1) corresponding to Tokenized
+            Asset Record (TAR1): Since the Tokenized Asset Record (TAR1)
+            carries a reference to the Schema Profile (SP1), gateway G2 must
+            use that reference to fetch a copy of the Schema Profile SP1 from
+            the correct Registry Service (RG0).<a href="#section-5.2-3.3.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt>(d)</dt>
+<dd id="section-5.2-3.4">
+            <p id="section-5.2-3.4.1">Policy Verification of Schema Profile SP1: Using the
+            Schema Profile SP1 obtained from Registry Service RG0 the gateway
+            G2 is now able to compare the asset definitions found in SP1
+            against its own network-wide policies regarding asset types and
+            classes permitted to enter the destination network NW2.<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="working_with_registries">
+<section id="section-6">
+      <h2 id="name-working-with-registries">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-working-with-registries" class="section-name selfRef">Working with Registries</a>
+      </h2>
+<p id="section-6-1">Below we give a list of elements that must be considered when working with Registries<a href="#section-6-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6-2.1">
+          <p id="section-6-2.1.1">Any Party (Asset Provider or Asset Schema Authority) appears in the Registry via a
+          “Party Definition” record. Such self-declared Party Definition (Asset Provider Definition or
+          Asset Schema Authority Definition) should contain a cryptographic public key that would
+          be used by the party for any proof operation related to creating Asset Schemas and Asset Instances (see below).<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.2">
+          <p id="section-6-2.2.1">The identifier of a Party Definition should not be derived from any Party key pair.<a href="#section-6-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.3">
+          <p id="section-6-2.3.1">Updates of a Party Definition are append-only. Party Definitions may contain new as
+          well as revoked public keys. It may also contain integrity keys (see below). Appends are transactions
+          that are signed using the private key of the Party.<a href="#section-6-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.4">
+          <p id="section-6-2.4.1">Key rotation is done by appending a new Party Definition containing the new key, and subsequently,
+          a new update of the Party Definition revoking the old public key.<a href="#section-6-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.5">
+          <p id="section-6-2.5.1">New Asset Schemas/Profiles (or new versions of existing Asset Schemas/Profiles) can be appended
+          in the Registry by any Party without previous authorisation by any other Party.<a href="#section-6-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.6">
+          <p id="section-6-2.6.1">As part of its Definition, an Asset Provider can self-declare several key pairs that would be used as
+          integrity verification keys for Digitized Asset Records and Tokenized Asset Records.<a href="#section-6-2.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.7">
+          <p id="section-6-2.7.1">When issuing a TAR, an Asset Provider should sign the TAR data with an integrity key. Integrity keys
+          are declared as part of an Asset Provider Definition.<a href="#section-6-2.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.8">
+          <p id="section-6-2.8.1">A Token Issuance Authorisation Request (TIAR) is created by an Asset Provider (i.e. signed by the
+          private key of the Asset Provider). It is a data structure containing information about an Asset Provider
+          including a cryptographic public key (that is part of its Asset Provider Definition), a reference to a Network
+          (a Network ID), and a reference to the Asset Schema (an Asset Schema ID). (note: A TIAR is similar to a
+          Certificate Signing Request in the context of SSL).<a href="#section-6-2.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.9">
+          <p id="section-6-2.9.1">The TIAR becomes a Token Issuance Authorisation (TIA) when signed by a key belonging to the Asset Schema Authority
+          (Such key is part of the Asset Schema Authority Definition).<a href="#section-6-2.9.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.10">
+          <p id="section-6-2.10.1">Any third party can verify the validity of a DAR or a TAR as they are publically available and can be retrieved  from
+          the related Registries and Networks.<a href="#section-6-2.10.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.11">
+          <p id="section-6-2.11.1">Any third party can verify the validity of a DAR or a TAR as they are publically available and can be retrieved  from
+          the related Registries and Networks.<a href="#section-6-2.11.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.12">
+          <p id="section-6-2.12.1">An Digitized Asset Record is valid when all the following conditions apply (assuming a given Network and Registry):<a href="#section-6-2.12.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6-2.12.2.1">
+              <p id="section-6-2.12.2.1.1">The Tokenized Asset Record associated to the Digitized Asset Record is signed by an integrity key of a given Asset Provider.<a href="#section-6-2.12.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-6-2.12.2.2">
+              <p id="section-6-2.12.2.2.1">The integrity key can be found in the Asset Provider Definition of the Asset Provider.<a href="#section-6-2.12.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-6-2.12.2.3">
+              <p id="section-6-2.12.2.3.1">A TIA related to the Asset Schema of that TAR is linked/embedded to the TAR.<a href="#section-6-2.12.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-6-2.12.2.4">
+              <p id="section-6-2.12.2.4.1">The TIA contains the public key of the Asset Provider.<a href="#section-6-2.12.2.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-6-2.12.2.5">
+              <p id="section-6-2.12.2.5.1">The Asset Schema Authority that has signed the TIA has also created the Asset Schema/Profile
+              (or the specific Asset Schema/{Profile version).<a href="#section-6-2.12.2.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+      </ul>
+</section>
+</div>
+<section id="section-7">
+      <h2 id="name-references">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<dl class="references">
+<dt id="MiCA">[1]</dt>
+      <dd>
+<span class="refAuthor">European Parliament</span>, <span class="refTitle">"MiCA Regulation"</span>, <time datetime="2022" class="refDate">2022</time>, <span>&lt;<a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A52020PC0593">https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A52020PC0593</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SATP-ARCH">[2]</dt>
+      <dd>
+<span class="refAuthor">Hardjono, T.</span>, <span class="refTitle">"SATP Architecture"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-SATP</span>, <time datetime="2022" class="refDate">2022</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-SATP">https://datatracker.ietf.org/doc/html/draft-SATP</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="ClearingHouses">[3]</dt>
+    <dd>
+<span class="refAuthor">Clearstream, D. E.</span>, <span class="refTitle">"Advancing the Digital Asset Era, Together: An Industry Paper from DTCC / Clearstream / Euroclear"</span>, <time datetime="2023" class="refDate">2023</time>, <span>&lt;<a href="https://www.dtcc.com/-/media/Files/Downloads/WhitePapers/FMI-Standards-WP.pdf">https://www.dtcc.com/-/media/Files/Downloads/WhitePapers/FMI-Standards-WP.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<div id="authors-addresses">
+<section id="appendix-A">
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Denis Avrilionis</span></div>
+<div dir="auto" class="left"><span class="org">Compellio S.A.</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:denis@compell.io" class="email">denis@compell.io</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Thomas Hardjono</span></div>
+<div dir="auto" class="left"><span class="org">MIT Connection Science</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:hardjono@mit.org" class="email">hardjono@mit.org</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
