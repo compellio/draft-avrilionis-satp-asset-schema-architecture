@@ -372,7 +372,6 @@ Table of Contents
         the TAR.  The TAR is the middleman construct that holds things
         together.
 
-
                   |               |
                   |               | +---------+
                   |               | | Asset   |
@@ -529,7 +528,6 @@ Table of Contents
        as the DAR might have already been created)
 
    6.  The TAR is issued on the given Registry
-
 
   +----------------+    +------------------------+    +----------+    +---------+
   | Asset Provider |    | Asset Schema Authority |    | Registry |    | Network |
