@@ -87,7 +87,7 @@
 
       <t> A management architecture for asset schemas and profiles must
       include mechanisms to enable designated authorities in a jurisdiction or
-      community to publish an asset definition schema in such a way that is 
+      community to publish an asset definition schema in such a way that is
       easily accessible. Furthermore, the schema management architecture must
       provide standard protocols to enable any entity or community to easily
       derive narrower profiles and enable them to mint tokens that are
@@ -141,8 +141,8 @@
         the ledger of a given network for ease of accessibility (e.g.
         accessible smart contract), but its utility is independent of any
         technology used to store it. A DAR may hold reference to attestations
-        issued by one or more Asset Record Authority. In the context of SATP, 
-        a DAR is typically hosted in a Network - a DAR is what is often quoted 
+        issued by one or more Asset Record Authority. In the context of SATP,
+        a DAR is typically hosted in a Network - a DAR is what is often quoted
         as "asset" in SATP Core.</t>
 
         <t hangText="Asset Record Authority"><vspace/> This is a legal entity
@@ -164,11 +164,11 @@
         Asset-Token, because the record provides the semantic meaning
         of the Asset-Token. We refer to the TAR as “smart pointer”
         because it maintains one-to-one mapping with a DAR. A TAR does not
-        carry ownership information. In the context of SATP, 
-        a DAR is typically recorded in a Registry - a TAR is part of the SATP 
-        transfer context established during SATP Setup stage (a.k.a "Stage 0"). 
-        A TAR has a standardized identification format so Gateways have a 
-        uniform way to identify assets, independently from the specific 
+        carry ownership information. In the context of SATP,
+        a DAR is typically recorded in a Registry - a TAR is part of the SATP
+        transfer context established during SATP Setup stage (a.k.a "Stage 0").
+        A TAR has a standardized identification format so Gateways have a
+        uniform way to identify assets, independently from the specific
         DAR identification method used in each Network.</t>
 
         <t hangText="Asset-Token (or Token)"><vspace/> This is the data
@@ -351,23 +351,23 @@
         </ol>
 
         <figure align="center" anchor="concepts" title="Basic concepts">
-          <artwork><![CDATA[  
-             |               |          
-             |               | +---------+ 
-             |               | | Asset   | 
+          <artwork><![CDATA[
+             |               |
+             |               | +---------+
+             |               | | Asset   |
              |               | | Schema  |
-             |               | +---------+ 
-             |               |      ^ 
-             |               |      |    
-             |               |  Ref | 
-             |               |      | 
+             |               | +---------+
+             |               |      ^
+             |               |      |
+             |               |  Ref |
+             |               |      |
  +------+   Ref  +------+   Ref  +------+   Ref  +-------------+
  | RWA  | <----- | DAR  | <----- | TAR  | <----- | Asset-Token |
  +------+    |   +------+    |   +------+        +-------------+
-             |               | 
-             |               | 
- Off-line    |    Network    |    Registry 
-            
+             |               |
+             |               |
+ Off-line    |    Network    |    Registry
+
           ]]></artwork>
         </figure>
       </section>
@@ -451,23 +451,23 @@
         by an Asset Schema Authority. TIAs allow Asset Providers to issue TARs
         in a specific Registry, which are valid for a given Asset Schema Profile. </t>
 
-        <t>Note: It is assumed that the Asset Provider holds the authorisation from an Asset Record Authority 
-        to issue DARs in a given network. This authorisation is eventually part of the attributes of the DAR. Issuance of 
+        <t>Note: It is assumed that the Asset Provider holds the authorisation from an Asset Record Authority
+        to issue DARs in a given network. This authorisation is eventually part of the attributes of the DAR. Issuance of
         DAR authorisations is outside of the scope of the present draft.</t>
 
         <t>Based on the TIA the Asset Provider Issues a TAR in the given Registry. Such TAR contains
         references to the underlying Digitised Asset Record, the specific
         Asset Schema-Profile as well as to the TIA. </t>
       </section>
-        
+
       <section anchor="registry_governance" title="Registry governance">
-        <t>The current draft does not impose the existence of a central Registry. Many different registries may exist 
-        either in the same or in different jurisdictions. Asset Schema Authorities as well as Asset providers can freely 
-        register themselves at a given Registry without any permission from any central organisation. Asset Providers 
+        <t>The current draft does not impose the existence of a central Registry. Many different registries may exist
+        either in the same or in different jurisdictions. Asset Schema Authorities as well as Asset providers can freely
+        register themselves at a given Registry without any permission from any central organisation. Asset Providers
         can request an Asset Issuance Authorisation from the relevant Asset Schema Authority at any time.
         </t>
       </section>
-      
+
       <section anchor="DAR_issuance" title="DAR issuance">
         <t>In order for an Asset Provider to issue valid DARs and related TARs a series of processing steps occur. Before such processing sequence the following initial state must exist:
          </t>
@@ -485,7 +485,7 @@
             <t>It is also assumed that the Asset Provider holds an authorisation to issue DARs in the given Network</t>
            </li>
          </ul>
-         
+
          <t>Given the above initial state, the processing sequence is described in the sequence diagram below:</t>
          <ol>
           <li>
@@ -507,31 +507,31 @@
             <t>The TAR is issued on the given Registry</t>
           </li>
         </ol>
-        
+
         <figure align="center" anchor="dar_issuance" title="DAR Issuance">
-          <artwork><![CDATA[  
-  +----------------+    +------------------------+    +----------+    +---------+ 
+          <artwork><![CDATA[
+  +----------------+    +------------------------+    +----------+    +---------+
   | Asset Provider |    | Asset Schema Authority |    | Registry |    | Network |
   +----------------+    +------------------------+    +----------+    +---------+
          |                         |                      |               |
          |                         |                      |               |
          | 1. Fetch Authority Definition for Asset Profile
-         |-------------------------|--------------------->|               | 
+         |-------------------------|--------------------->|               |
          |                         |                      |               |
          | 2. Submit TIAR for Asset Profile
-         |------------------------>|                      |               | 
+         |------------------------>|                      |               |
          |                         |                      |               |
-         |                         | 3. Register TIA 
-         |                         |--------------------->|               | 
+         |                         | 3. Register TIA
+         |                         |--------------------->|               |
          |                         |                      |               |
          |  4. Deliver TIA for given Asset Profile
          |<------------------------|                      |               |
          |                         |                      |               |
          | 5. Issue DAR (if not already created)
-         |-------------------------|--------------------->|-------------->| 
+         |-------------------------|--------------------->|-------------->|
          |                         |                      |               |
-         | 6. Issue TAR with Refs to DAR, Asset Profile and TIA 
-         |-------------------------|--------------------->|               | 
+         | 6. Issue TAR with Refs to DAR, Asset Profile and TIA
+         |-------------------------|--------------------->|               |
          |                         |                      |               |
           ]]></artwork>
         </figure>
@@ -623,9 +623,9 @@
       <t>Below we give a list of elements that must be considered when working with Registries</t>
       <ul>
         <li>
-          <t>Any Party (Asset Provider or Asset Schema Authority) appears in the Registry via a 
-          “Party Definition” record. Such self-declared Party Definition (Asset Provider Definition or 
-          Asset Schema Authority Definition) should contain a cryptographic public key that would 
+          <t>Any Party (Asset Provider or Asset Schema Authority) appears in the Registry via a
+          “Party Definition” record. Such self-declared Party Definition (Asset Provider Definition or
+          Asset Schema Authority Definition) should contain a cryptographic public key that would
           be used by the party for any proof operation related to creating Asset Schemas and Asset Instances (see below).
           </t>
         </li>
@@ -633,45 +633,45 @@
           <t>The identifier of a Party Definition should not be derived from any Party key pair.</t>
         </li>
         <li>
-          <t>Updates of a Party Definition are append-only. Party Definitions may contain new as 
-          well as revoked public keys. It may also contain integrity keys (see below). Appends are transactions 
+          <t>Updates of a Party Definition are append-only. Party Definitions may contain new as
+          well as revoked public keys. It may also contain integrity keys (see below). Appends are transactions
           that are signed using the private key of the Party.</t>
         </li>
         <li>
-          <t>Key rotation is done by appending a new Party Definition containing the new key, and subsequently, 
+          <t>Key rotation is done by appending a new Party Definition containing the new key, and subsequently,
           a new update of the Party Definition revoking the old public key.</t>
         </li>
         <li>
-          <t>New Asset Schemas/Profiles (or new versions of existing Asset Schemas/Profiles) can be appended 
+          <t>New Asset Schemas/Profiles (or new versions of existing Asset Schemas/Profiles) can be appended
           in the Registry by any Party without previous authorisation by any other Party.</t>
-        </li>        
+        </li>
         <li>
-          <t>As part of its Definition, an Asset Provider can self-declare several key pairs that would be used as 
+          <t>As part of its Definition, an Asset Provider can self-declare several key pairs that would be used as
           integrity verification keys for Digitized Asset Records and Tokenized Asset Records.</t>
-        </li>        
+        </li>
         <li>
-          <t>When issuing a TAR, an Asset Provider should sign the TAR data with an integrity key. Integrity keys 
+          <t>When issuing a TAR, an Asset Provider should sign the TAR data with an integrity key. Integrity keys
           are declared as part of an Asset Provider Definition.</t>
-        </li>   
+        </li>
         <li>
-          <t>A Token Issuance Authorisation Request (TIAR) is created by an Asset Provider (i.e. signed by the 
-          private key of the Asset Provider). It is a data structure containing information about an Asset Provider 
-          including a cryptographic public key (that is part of its Asset Provider Definition), a reference to a Network 
-          (a Network ID), and a reference to the Asset Schema (an Asset Schema ID). (note: A TIAR is similar to a 
+          <t>A Token Issuance Authorisation Request (TIAR) is created by an Asset Provider (i.e. signed by the
+          private key of the Asset Provider). It is a data structure containing information about an Asset Provider
+          including a cryptographic public key (that is part of its Asset Provider Definition), a reference to a Network
+          (a Network ID), and a reference to the Asset Schema (an Asset Schema ID). (note: A TIAR is similar to a
           Certificate Signing Request in the context of SSL).</t>
-        </li>        
+        </li>
         <li>
-          <t>The TIAR becomes a Token Issuance Authorisation (TIA) when signed by a key belonging to the Asset Schema Authority 
+          <t>The TIAR becomes a Token Issuance Authorisation (TIA) when signed by a key belonging to the Asset Schema Authority
           (Such key is part of the Asset Schema Authority Definition). </t>
-        </li> 
+        </li>
         <li>
-          <t>Any third party can verify the validity of a DAR or a TAR as they are publically available and can be retrieved  from 
+          <t>Any third party can verify the validity of a DAR or a TAR as they are publically available and can be retrieved  from
           the related Registries and Networks.</t>
-        </li> 
+        </li>
         <li>
-          <t>Any third party can verify the validity of a DAR or a TAR as they are publically available and can be retrieved  from 
+          <t>Any third party can verify the validity of a DAR or a TAR as they are publically available and can be retrieved  from
           the related Registries and Networks.</t>
-        </li> 
+        </li>
         <li>
           <t>An Digitized Asset Record is valid when all the following conditions apply (assuming a given Network and Registry):</t>
           <ul>
@@ -688,12 +688,12 @@
               <t>The TIA contains the public key of the Asset Provider.</t>
             </li>
             <li>
-              <t>The Asset Schema Authority that has signed the TIA has also created the Asset Schema/Profile 
+              <t>The Asset Schema Authority that has signed the TIA has also created the Asset Schema/Profile
               (or the specific Asset Schema/{Profile version).</t>
             </li>
           </ul>
         </li>
-      </ul>       
+      </ul>
 
     </section>
   </middle>
