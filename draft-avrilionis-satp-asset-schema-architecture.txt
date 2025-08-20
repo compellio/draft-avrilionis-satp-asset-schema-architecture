@@ -5,8 +5,8 @@
 Network Working Group                                      D. Avrilionis
 Internet-Draft                                            Compellio S.A.
 Intended status: Informational                               T. Hardjono
-Expires: 21 August 2025                           MIT Connection Science
-                                                        17 February 2025
+Expires: 21 February 2026                         MIT Connection Science
+                                                          20 August 2025
 
 
               Asset Schema Architecture for Asset Exchange
@@ -31,8 +31,8 @@ Abstract
 Editorial Note
 
    Discussion of this draft takes place on the SATP mailing list
-   (sat@ietf.org), which has its home page at
-   https://datatracker.ietf.org/wg/satp/about/.
+   (sat@ietf.org), which has its home page
+   athttps://datatracker.ietf.org/wg/satp/about/.
 
 Status of This Memo
 
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 August 2025.
+   This Internet-Draft will expire on 21 February 2026.
 
 Copyright Notice
 
