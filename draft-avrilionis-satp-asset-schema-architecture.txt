@@ -5,8 +5,8 @@
 Network Working Group                                      D. Avrilionis
 Internet-Draft                                            Compellio S.A.
 Intended status: Informational                               T. Hardjono
-Expires: 21 February 2026                         MIT Connection Science
-                                                          20 August 2025
+Expires: 24 April 2026                            MIT Connection Science
+                                                         21 October 2025
 
 
               Asset Schema Architecture for Asset Exchange
@@ -26,7 +26,7 @@ Abstract
    definition schema upon which the token was based in the origin
    network.  The current document discusses the management architecture
    for the asset definition schema and the schema-profiles derived from
-   the definition schema.
+   the definition schema
 
 Editorial Note
 
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 February 2026.
+   This Internet-Draft will expire on 24 April 2026.
 
 Copyright Notice
 
