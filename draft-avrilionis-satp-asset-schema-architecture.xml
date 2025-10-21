@@ -47,7 +47,7 @@
       receiving gateway must have access to the asset definition schema upon
       which the token was based in the origin network. The current document
       discusses the management architecture for the asset definition schema
-      and the schema-profiles derived from the definition schema.</t>
+      and the schema-profiles derived from the definition schema</t>
     </abstract>
 
     <note title="Editorial Note">
